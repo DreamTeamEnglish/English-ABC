@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>English ABC: A–H</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .content-wrapper {
+      background-color: rgba(255, 255, 255, 0.8);
+      max-width: 1100px;
+      margin: 40px auto;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    img.logo {
+      width: 120px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.6em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2em;
+      color: #444;
+      margin-bottom: 30px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 14px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      margin-top: 20px;
+      margin-bottom: 40px;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .game-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 20px;
+      font-size: 1em;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .game-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    .game-icon {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .game-title {
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .game-desc {
+      font-size: 0.9em;
+      color: #eef1f2;
+    }
+
+    footer {
+      margin-top: 40px;
+      font-size: 1em;
+      color: #555;
+    }
+
+    footer a {
+      color: #2c3e50;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content-wrapper">
+    <img src="logo.jpg" alt="English ABC Logo" class="logo">
+
+    <h1>English ABC — Letters A to H</h1>
+    <p>Let's chant, play, and learn!</p>
+
+    <video controls>
+      <source src="A-H_chant.mp4" type="video/mp4">
+      Ваш браузер не поддерживает воспроизведение видео.
+    </video>
+
+    <div class="button-grid">
+
+      <button class="game-button" onclick="window.open('A-H_CARDS.html', '_blank')">
+        <div class="game-icon">🃏</div>
+        <div class="game-title">A–H CARDS</div>
+        <div class="game-desc">Давай выучим буквы: A - H</div>
+      </button>
+
+      <button class="game-button" onclick="window.open('BUBBLES.html', '_blank')">
+        <div class="game-icon">🫧</div>
+        <div class="game-title">BUBBLES</div>
+        <div class="game-desc">Чтобы выиграть - подбери к пузырям с буквами пузыри со словами!</div>
+      </button>
+
+      <button class="game-button" onclick="window.open('MATCH.html', '_blank')">
+        <div class="game-icon">🧩</div>
+        <div class="game-title">MATCH</div>
+        <div class="game-desc">Послушай и подбери: буква — слово</div>
+      </button>
+
+      <button class="game-button" onclick="window.open('RADAR_LETTERS.html', '_blank')">
+        <div class="game-icon">📡</div>
+        <div class="game-title">RADAR LETTERS</div>
+        <div class="game-desc">Поймал букву - назови её!</div>
+      </button>
+
+      <button class="game-button" onclick="window.open('RADAR_WORDS.html', '_blank')">
+        <div class="game-icon">🔠</div>
+        <div class="game-title">RADAR WORDS</div>
+        <div class="game-desc">Поймал слово - прочти его!</div>
+      </button>
+
+      <button class="game-button" onclick="window.open('SORTING.html', '_blank')">
+        <div class="game-icon">📂</div>
+        <div class="game-title">SORTING</div>
+        <div class="game-desc">Разложи картинки по буквам</div>
+      </button>
+
+      <button class="game-button" onclick="window.open('TRAIN.html', '_blank')">
+        <div class="game-icon">🚂</div>
+        <div class="game-title">TRAIN</div>
+        <div class="game-desc">Собери поезд из слов</div>
+      </button>
+
+    </div>
+
+    <footer>
+      © 2025 — <a href="https://vk.com/dreamteamenglish" target="_blank">Dream Team English</a>
+    </footer>
+  </div>
+
+</body>
+</html>
