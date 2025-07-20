@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Английский алфавит для детей</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Marker Felt', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #e0f7fa, #bbdefb);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #1565c0;
+            margin: 20px 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .alphabet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        
+        .letter-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .letter-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.15);
+            background: #f8fdff;
+        }
+        
+        .letters {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .capital, .lowercase {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: bold;
+            border-radius: 50%;
+            transition: all 0.2s;
+        }
+        
+        .capital {
+            background: #ffebee;
+            color: #d32f2f;
+            border: 3px solid #ffcdd2;
+        }
+        
+        .lowercase {
+            background: #e3f2fd;
+            color: #1976d2;
+            border: 3px solid #bbdefb;
+        }
+        
+        .capital:hover, .lowercase:hover {
+            transform: scale(1.1);
+        }
+        
+        .word {
+            font-size: 28px;
+            margin: 10px 0;
+            color: #2e7d32;
+            font-weight: bold;
+            padding: 8px 16px;
+            border-radius: 10px;
+            background: #e8f5e9;
+            transition: all 0.2s;
+            width: fit-content;
+            align-self: center;
+        }
+        
+        .word:hover {
+            background: #c8e6c9;
+            transform: scale(1.05);
+        }
+        
+        img {
+            height: 150px;
+            margin: 10px 0;
+            border-radius: 10px;
+            object-fit: contain;
+            border: 3px solid #e0e0e0;
+            background: white;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+        
+        img:hover {
+            transform: scale(1.05);
+            border-color: #bbdefb;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+        
+        .sound-indicator {
+            font-size: 24px;
+            margin-top: 10px;
+            color: #7e57c2;
+            opacity: 0.7;
+        }
+        
+        footer {
+            margin-top: 30px;
+            color: #546e7a;
+            font-size: 18px;
+        }
+        
+        @media (max-width: 600px) {
+            .alphabet-grid {
+                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+                gap: 15px;
+            }
+            
+            .letters {
+                gap: 10px;
+            }
+            
+            .capital, .lowercase {
+                width: 50px;
+                height: 50px;
+                font-size: 32px;
+            }
+            
+            img {
+                height: 120px;
+            }
+            
+            .word {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Английский алфавит ✨</h1>
+        
+        <div class="alphabet-grid">
+            <!-- Карточка для буквы A -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/A.mp3')">A</div>
+                    <div class="lowercase" onclick="playSound('sounds/aa.mp3')">a</div>
+                </div>
+                <img src="images/ant.jpg" alt="Муравей" onclick="playSound('sounds/ant.mp3')">
+                <div class="word" onclick="playSound('sounds/ant.mp3')">ant</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы B -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/B.mp3')">B</div>
+                    <div class="lowercase" onclick="playSound('sounds/bb.mp3')">b</div>
+                </div>
+                <img src="images/bed.jpg" alt="Кровать" onclick="playSound('sounds/bed.mp3')">
+                <div class="word" onclick="playSound('sounds/bed.mp3')">bed</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы C -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/C.mp3')">C</div>
+                    <div class="lowercase" onclick="playSound('sounds/cc.mp3')">c</div>
+                </div>
+                <img src="images/cat.jpg" alt="Кошка" onclick="playSound('sounds/cat.mp3')">
+                <div class="word" onclick="playSound('sounds/cat.mp3')">cat</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы D -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/D.mp3')">D</div>
+                    <div class="lowercase" onclick="playSound('sounds/dd.mp3')">d</div>
+                </div>
+                <img src="images/dog.jpg" alt="Собака" onclick="playSound('sounds/dog.mp3')">
+                <div class="word" onclick="playSound('sounds/dog.mp3')">dog</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы E -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/E.mp3')">E</div>
+                    <div class="lowercase" onclick="playSound('sounds/ee.mp3')">e</div>
+                </div>
+                <img src="images/egg.jpg" alt="Яйцо" onclick="playSound('sounds/egg.mp3')">
+                <div class="word" onclick="playSound('sounds/egg.mp3')">egg</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы F -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/F.mp3')">F</div>
+                    <div class="lowercase" onclick="playSound('sounds/ff.mp3')">f</div>
+                </div>
+                <img src="images/flag.jpg" alt="Флаг" onclick="playSound('sounds/flag.mp3')">
+                <div class="word" onclick="playSound('sounds/flag.mp3')">flag</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы G -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/G.mp3')">G</div>
+                    <div class="lowercase" onclick="playSound('sounds/gg.mp3')">g</div>
+                </div>
+                <img src="images/glass.jpg" alt="Стакан" onclick="playSound('sounds/glass.mp3')">
+                <div class="word" onclick="playSound('sounds/glass.mp3')">glass</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+            
+            <!-- Карточка для буквы H -->
+            <div class="letter-card">
+                <div class="letters">
+                    <div class="capital" onclick="playSound('sounds/H.mp3')">H</div>
+                    <div class="lowercase" onclick="playSound('sounds/hh.mp3')">h</div>
+                </div>
+                <img src="images/horse.jpg" alt="Лошадь" onclick="playSound('sounds/horse.mp3')">
+                <div class="word" onclick="playSound('sounds/horse.mp3')">horse</div>
+                <div class="sound-indicator">🔊 Нажми на буквы, картинку или слово</div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Нажми на буквы, чтобы услышать их звучание, и на картинки или слова, чтобы услышать слова!</p>
+        </footer>
+    </div>
+
+    <script>
+        function playSound(soundFile) {
+            const audio = new Audio(soundFile);
+            audio.play().catch(error => {
+                console.log("Ошибка воспроизведения звука:", error);
+                alert("Звук не найден! Убедитесь, что файл существует в папке sounds/");
+            });
+        }
+        
+        // Добавляем анимацию при нажатии
+        document.querySelectorAll('.capital, .lowercase, .word, img').forEach(element => {
+            element.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

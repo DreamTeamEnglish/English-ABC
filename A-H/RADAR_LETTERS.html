@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Letter Radar - Alphabet Kingdom</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a2a6c, #2a4d69);
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            margin: 0;
+            text-align: center;
+        }
+        
+        .instructions {
+            font-size: 1.2rem;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px 15px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 90%;
+        }
+        
+        .status {
+            font-size: 1.2rem;
+            min-height: 30px;
+            text-align: center;
+            margin: 0;
+        }
+        
+        .game-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+        }
+        
+        @media (min-width: 768px) {
+            .game-area {
+                flex-direction: row;
+                justify-content: center;
+                align-items: flex-start;
+            }
+        }
+        
+        .canvas-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        #radarCanvas {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1/1;
+            background-color: rgba(0, 20, 40, 0.7);
+            border: 3px solid #00c3ff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #00c3ff, 0 0 40px rgba(0, 195, 255, 0.5);
+            display: block;
+        }
+        
+        .found-letters {
+            font-size: 1.5rem;
+            letter-spacing: 10px;
+            margin: 10px 0;
+            min-height: 40px;
+            text-shadow: 0 0 10px #00ff9d;
+            text-align: center;
+            word-break: break-word;
+        }
+        
+        .counter {
+            font-size: 1.5rem;
+            text-shadow: 0 0 10px #ff00ff;
+            text-align: center;
+        }
+        
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 10px;
+            position: sticky;
+            bottom: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 20px;
+            z-index: 10;
+        }
+        
+        .side-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            min-width: 150px;
+        }
+        
+        button {
+            background: linear-gradient(to bottom, #ff8c00, #ff5500);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.1rem;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 140, 0, 0.4);
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 7px 20px rgba(255, 140, 0, 0.6);
+        }
+        
+        button:disabled {
+            background: linear-gradient(to bottom, #555, #333);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            opacity: 0.7;
+        }
+        
+        #startBtn {
+            background: linear-gradient(to bottom, #00c853, #009624);
+        }
+        
+        #stopBtn {
+            background: linear-gradient(to bottom, #ff3d00, #dd2c00);
+        }
+        
+        #playAgainBtn {
+            background: linear-gradient(to bottom, #2979ff, #01579b);
+        }
+        
+        #nextBtn {
+            background: linear-gradient(to bottom, #ffeb3b, #fbc02d);
+            color: #333;
+            display: none;
+            animation: pulseButton 1.5s infinite;
+        }
+        
+        .highlight {
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes pulseButton {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 235, 59, 0.7); }
+            70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(255, 235, 59, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); }
+        }
+        
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .instructions {
+                font-size: 1rem;
+            }
+            
+            .found-letters {
+                font-size: 1.2rem;
+                letter-spacing: 5px;
+            }
+            
+            button {
+                font-size: 1rem;
+                padding: 8px 15px;
+                min-width: 100px;
+            }
+            
+            .side-controls {
+                min-width: 100%;
+                order: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛸 Letter Radar - Alphabet Kingdom 🏰</h1>
+        <div class="instructions">Find hidden letters! When radar finds one, SAY IT LOUD and click NEXT!</div>
+        
+        <p class="status" id="status">Ready to start!</p>
+        
+        <div class="game-area">
+            <div class="canvas-container">
+                <canvas id="radarCanvas"></canvas>
+            </div>
+            
+            <div class="side-controls">
+                <button id="nextBtn">NEXT</button>
+                <div class="counter">Letters found: <span id="count">0</span>/<span id="total">0</span></div>
+                <div class="found-letters" id="foundLetters"></div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="startBtn">START</button>
+            <button id="stopBtn" disabled>STOP</button>
+            <button id="playAgainBtn">PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script>
+        // Game configuration
+        const config = {
+            letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+            radarSpeed: 0.007, // Замедленная скорость луча
+            detectionRadius: 20,
+            scanRadius: 200,
+            letterSize: 30,
+            gameDuration: 180000 // 3 minutes
+        };
+
+        // Game state
+        let gameState = {
+            radarAngle: 0,
+            isScanning: false,
+            foundLetters: [],
+            letterPositions: [],
+            animationId: null,
+            startTime: null,
+            timer: null,
+            canvasSize: 0,
+            currentLetter: null,
+            paused: false
+        };
+
+        // DOM Elements
+        const canvas = document.getElementById('radarCanvas');
+        const ctx = canvas.getContext('2d');
+        const foundLettersEl = document.getElementById('foundLetters');
+        const countEl = document.getElementById('count');
+        const totalEl = document.getElementById('total');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const statusEl = document.getElementById('status');
+
+        // Initialize canvas size
+        function initCanvasSize() {
+            const container = document.querySelector('.canvas-container');
+            const size = Math.min(container.offsetWidth, 500);
+            canvas.width = size;
+            canvas.height = size;
+            gameState.canvasSize = size;
+        }
+
+        // Initialize game
+        function initGame() {
+            // Reset game state
+            gameState = {
+                radarAngle: 0,
+                isScanning: false,
+                foundLetters: [],
+                letterPositions: [],
+                animationId: null,
+                startTime: null,
+                timer: null,
+                canvasSize: gameState.canvasSize,
+                currentLetter: null,
+                paused: false
+            };
+            
+            // Initialize letter positions
+            generateLetterPositions();
+            
+            // Update UI
+            foundLettersEl.textContent = '';
+            countEl.textContent = '0';
+            totalEl.textContent = config.letters.length;
+            statusEl.textContent = 'Ready to start!';
+            nextBtn.style.display = 'none';
+            
+            // Enable/disable buttons
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            playAgainBtn.disabled = false;
+            nextBtn.disabled = false;
+            
+            // Draw initial state
+            draw();
+        }
+
+        // Generate random positions for letters
+        function generateLetterPositions() {
+            const centerX = gameState.canvasSize / 2;
+            const centerY = gameState.canvasSize / 2;
+            const minDistance = 60;
+            const maxDistance = (gameState.canvasSize / 2) - config.letterSize;
+            
+            config.letters.forEach(letter => {
+                let validPosition = false;
+                let x, y;
+                
+                while (!validPosition) {
+                    // Generate position in circular area
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = minDistance + Math.random() * (maxDistance - minDistance);
+                    
+                    x = centerX + Math.cos(angle) * distance;
+                    y = centerY + Math.sin(angle) * distance;
+                    
+                    // Check if position is not overlapping with existing letters
+                    validPosition = !gameState.letterPositions.some(pos => {
+                        const dx = pos.x - x;
+                        const dy = pos.y - y;
+                        return Math.sqrt(dx * dx + dy * dy) < config.letterSize * 1.5;
+                    });
+                }
+                
+                gameState.letterPositions.push({ letter, x, y, found: false });
+            });
+        }
+
+        // Draw radar and letters
+        function draw() {
+            const centerX = gameState.canvasSize / 2;
+            const centerY = gameState.canvasSize / 2;
+            const scanRadius = (gameState.canvasSize / 2) - 10;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, gameState.canvasSize, gameState.canvasSize);
+            
+            // Draw radar circles
+            ctx.strokeStyle = 'rgba(0, 195, 255, 0.3)';
+            ctx.lineWidth = 2;
+            
+            // Draw concentric circles
+            for (let r = 50; r <= scanRadius; r += 50) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+            
+            // Draw radar lines
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.lineTo(
+                centerX + Math.cos(gameState.radarAngle) * scanRadius,
+                centerY + Math.sin(gameState.radarAngle) * scanRadius
+            );
+            ctx.stroke();
+            
+            // Draw detection arc
+            if (gameState.isScanning && !gameState.paused) {
+                const gradient = ctx.createRadialGradient(
+                    centerX, centerY, 0,
+                    centerX, centerY, scanRadius
+                );
+                gradient.addColorStop(0, 'rgba(0, 255, 157, 0.1)');
+                gradient.addColorStop(1, 'rgba(0, 255, 157, 0.01)');
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(
+                    centerX, centerY,
+                    scanRadius,
+                    gameState.radarAngle - 0.1,
+                    gameState.radarAngle + 0.1
+                );
+                ctx.closePath();
+                ctx.fillStyle = gradient;
+                ctx.fill();
+            }
+            
+            // Draw letters
+            const letterFontSize = Math.max(20, config.letterSize * (gameState.canvasSize / 500));
+            ctx.font = `bold ${letterFontSize}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            gameState.letterPositions.forEach(pos => {
+                // Highlight if letter is found or is current letter
+                if (pos.found) {
+                    ctx.fillStyle = '#00ff9d';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#00ff9d';
+                } else if (gameState.currentLetter && pos.letter === gameState.currentLetter.letter) {
+                    ctx.fillStyle = '#ffeb3b';
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = '#ffeb3b';
+                } else {
+                    ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                    ctx.shadowBlur = 0;
+                }
+                
+                ctx.fillText(pos.letter, pos.x, pos.y);
+            });
+            
+            // Reset shadow
+            ctx.shadowBlur = 0;
+            
+            // Draw center point
+            ctx.fillStyle = '#00c3ff';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Draw pause indicator if game is paused
+            if (gameState.paused) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+                ctx.fillRect(0, 0, gameState.canvasSize, gameState.canvasSize);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 30px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('SAY THE LETTER!', centerX, centerY - 20);
+                ctx.font = 'bold 24px Arial';
+                ctx.fillText(gameState.currentLetter.letter, centerX, centerY + 30);
+            }
+        }
+
+        // Update game state
+        function update() {
+            if (!gameState.isScanning || gameState.paused) return;
+            
+            // Update radar angle
+            gameState.radarAngle += config.radarSpeed;
+            if (gameState.radarAngle > Math.PI * 2) {
+                gameState.radarAngle = 0;
+            }
+            
+            // Detect letters
+            const centerX = gameState.canvasSize / 2;
+            const centerY = gameState.canvasSize / 2;
+            const scanRadius = (gameState.canvasSize / 2) - 10;
+            
+            gameState.letterPositions.forEach(pos => {
+                if (pos.found || gameState.paused) return;
+                
+                // Calculate angle to letter
+                const dx = pos.x - centerX;
+                const dy = pos.y - centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                const letterAngle = Math.atan2(dy, dx);
+                
+                // Normalize angles
+                const radarAngle = gameState.radarAngle % (Math.PI * 2);
+                let angleDiff = Math.abs(radarAngle - letterAngle);
+                
+                // Handle angle wrap-around
+                if (angleDiff > Math.PI) {
+                    angleDiff = Math.PI * 2 - angleDiff;
+                }
+                
+                // Check if letter is in radar beam
+                if (distance <= scanRadius && angleDiff < 0.15) {
+                    gameState.currentLetter = pos;
+                    pauseGame();
+                    
+                    // Play sound
+                    playBeepSound(660, 0.3);
+                    
+                    // Show NEXT button
+                    nextBtn.style.display = 'block';
+                }
+            });
+            
+            // Redraw scene
+            draw();
+            
+            // Continue animation
+            gameState.animationId = requestAnimationFrame(update);
+        }
+
+        // Pause the game when letter is found
+        function pauseGame() {
+            gameState.paused = true;
+            statusEl.textContent = `Letter found! Say "${gameState.currentLetter.letter}"!`;
+            draw();
+        }
+
+        // Resume the game after NEXT is clicked
+        function resumeGame() {
+            if (!gameState.currentLetter) return;
+            
+            // Mark letter as found if not already
+            if (!gameState.currentLetter.found) {
+                gameState.currentLetter.found = true;
+                gameState.foundLetters.push(gameState.currentLetter.letter);
+                updateFoundLettersDisplay();
+                
+                // Visual feedback
+                foundLettersEl.classList.add('highlight');
+                setTimeout(() => foundLettersEl.classList.remove('highlight'), 500);
+            }
+            
+            gameState.paused = false;
+            gameState.currentLetter = null;
+            nextBtn.style.display = 'none';
+            
+            // Запускаем радар сразу после нажатия NEXT
+            statusEl.textContent = 'Scanning for letters...';
+            draw();
+            
+            // Продолжаем обновление игры
+            gameState.animationId = requestAnimationFrame(update);
+            
+            // Check if all letters found
+            if (gameState.foundLetters.length === config.letters.length) {
+                endGame(true);
+            }
+        }
+
+        // Play beep sound
+        function playBeepSound(frequency, duration) {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                gainNode.gain.value = 0.1;
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                console.log("Audio not supported");
+            }
+        }
+
+        // Update found letters display
+        function updateFoundLettersDisplay() {
+            foundLettersEl.textContent = gameState.foundLetters.join(' ');
+            countEl.textContent = gameState.foundLetters.length;
+        }
+
+        // Start the radar
+        function startRadar() {
+            if (gameState.isScanning) return;
+            
+            gameState.isScanning = true;
+            gameState.paused = false;
+            statusEl.textContent = 'Scanning for letters...';
+            
+            // Enable/disable buttons
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            playAgainBtn.disabled = true;
+            nextBtn.style.display = 'none';
+            
+            // Set game timer
+            gameState.startTime = Date.now();
+            gameState.timer = setTimeout(() => endGame(false), config.gameDuration);
+            
+            // Start animation loop
+            gameState.animationId = requestAnimationFrame(update);
+        }
+
+        // Stop the radar
+        function stopRadar() {
+            if (!gameState.isScanning) return;
+            
+            gameState.isScanning = false;
+            gameState.paused = false;
+            cancelAnimationFrame(gameState.animationId);
+            clearTimeout(gameState.timer);
+            
+            statusEl.textContent = 'Scanning stopped. Press START to continue.';
+            nextBtn.style.display = 'none';
+            
+            // Enable/disable buttons
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            playAgainBtn.disabled = false;
+        }
+
+        // End the game
+        function endGame(isComplete) {
+            gameState.isScanning = false;
+            gameState.paused = false;
+            cancelAnimationFrame(gameState.animationId);
+            clearTimeout(gameState.timer);
+            nextBtn.style.display = 'none';
+            
+            // Enable/disable buttons
+            startBtn.disabled = true;
+            stopBtn.disabled = true;
+            playAgainBtn.disabled = false;
+            
+            if (isComplete) {
+                playBeepSound(880, 0.5);
+                setTimeout(() => playBeepSound(1046, 0.5), 500);
+                statusEl.textContent = 'Congratulations! All letters found!';
+                foundLettersEl.innerHTML = '🏆 KINGDOM BUILT! ALL LETTERS FOUND! 🏆';
+            } else {
+                playBeepSound(220, 0.5);
+                setTimeout(() => playBeepSound(165, 0.5), 500);
+                const foundCount = gameState.foundLetters.length;
+                const totalCount = config.letters.length;
+                statusEl.textContent = `Time's up! Found ${foundCount} of ${totalCount} letters.`;
+                foundLettersEl.innerHTML = `⏰ TIME'S UP! FOUND ${foundCount}/${totalCount} LETTERS!`;
+            }
+        }
+
+        // Event Listeners
+        startBtn.addEventListener('click', startRadar);
+        stopBtn.addEventListener('click', stopRadar);
+        playAgainBtn.addEventListener('click', initGame);
+        nextBtn.addEventListener('click', resumeGame);
+
+        // Initialize on load
+        window.addEventListener('load', () => {
+            initCanvasSize();
+            window.addEventListener('resize', initCanvasSize);
+            initGame();
+        });
+    </script>
+</body>
+</html>

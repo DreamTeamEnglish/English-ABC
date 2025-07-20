@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Буквенные Пузыри</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', 'Marker Felt', cursive;
+        }
+        
+        body {
+            background: linear-gradient(to bottom, #1a2980, #26d0ce);
+            min-height: 100vh;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            height: 90vh;
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .ocean {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, #005c97, #0077be, #0095d9, #00b4f0);
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .seaweed {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to top, #006400, #008000, #00a000);
+            z-index: 2;
+            border-radius: 50% 50% 0 0;
+        }
+        
+        .coral {
+            position: absolute;
+            bottom: 10px;
+            left: 10%;
+            width: 80px;
+            height: 60px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            z-index: 3;
+        }
+        
+        .coral:nth-child(2) {
+            left: 30%;
+            background: #ff8e53;
+            width: 60px;
+            height: 40px;
+        }
+        
+        .coral:nth-child(3) {
+            left: 70%;
+            background: #6a0dad;
+            width: 100px;
+            height: 50px;
+        }
+        
+        .game-title {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 2.5rem;
+            text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: grab;
+            user-select: none;
+            box-shadow: inset 0 -5px 15px rgba(255, 255, 255, 0.6),
+                        0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 5;
+            transition: transform 0.2s ease;
+            animation: float 8s infinite ease-in-out;
+            font-weight: bold;
+        }
+        
+        .bubble:hover {
+            transform: scale(1.05);
+        }
+        
+        .letter-bubble {
+            background: linear-gradient(145deg, #ff9a9e, #fad0c4);
+            color: #d32f2f;
+            font-size: 2rem;
+        }
+        
+        .image-bubble {
+            background: linear-gradient(145deg, #a1c4fd, #c2e9fb);
+            padding: 10px;
+        }
+        
+        .bubble-content {
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .bubble-image {
+            width: 80%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1.2rem;
+            z-index: 10;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .fish {
+            position: absolute;
+            bottom: 20px;
+            left: -100px;
+            width: 100px;
+            height: 60px;
+            z-index: 4;
+            transition: transform 0.5s ease;
+        }
+        
+        .score-container {
+            position: absolute;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1a2980;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 6;
+        }
+        
+        .star {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="gold"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>');
+            background-size: contain;
+            opacity: 0;
+        }
+        
+        .restart-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 12px 25px;
+            font-size: 1.2rem;
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            z-index: 10;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .restart-btn:hover {
+            background: #ff5252;
+            transform: translateY(-3px);
+        }
+        
+        /* Анимации */
+        @keyframes float {
+            0%, 100% { transform: translateY(0) translateX(0); }
+            25% { transform: translateY(-10px) translateX(5px); }
+            50% { transform: translateY(-20px) translateX(0); }
+            75% { transform: translateY(-10px) translateX(-5px); }
+        }
+        
+        @keyframes bubble-float {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-15px) translateX(5px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        
+        @keyframes fish-swim {
+            0% { left: -100px; }
+            100% { left: calc(100% + 100px); }
+        }
+        
+        @keyframes star-burst {
+            0% { transform: scale(0.5); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .bubble {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .letter-bubble {
+                font-size: 1.5rem;
+            }
+            
+            .instructions {
+                font-size: 1rem;
+                padding: 8px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .game-title {
+                font-size: 1.5rem;
+            }
+            
+            .bubble {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .letter-bubble {
+                font-size: 1.2rem;
+            }
+            
+            .score-container {
+                font-size: 1.1rem;
+                padding: 10px;
+                top: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="ocean">
+            <div class="seaweed"></div>
+            <div class="coral"></div>
+            <div class="coral"></div>
+            <div class="coral"></div>
+            <div class="fish">
+                <svg viewBox="0 0 100 60" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10,30 Q40,15 60,30 Q40,45 10,30 Z" fill="#FF6B6B" />
+                    <circle cx="70" cy="30" r="5" fill="#333" />
+                    <path d="M80,25 Q85,30 80,35 Z" fill="#333" />
+                    <path d="M0,25 Q5,30 0,35 Z" fill="#FF8E53" />
+                </svg>
+            </div>
+            <div class="stars"></div>
+        </div>
+        
+        <h1 class="game-title">🐠 Буквенные Пузыри 🐚</h1>
+        
+        <div class="score-container">
+            Правильных пар: <span id="score">0</span>
+        </div>
+        
+        <button class="restart-btn" id="restart-btn">Новая игра</button>
+        
+        <div class="instructions">
+            Перетащи пузырь с буквой на пузырь с картинкой, которая начинается на эту букву!
+        </div>
+    </div>
+
+    <script>
+        // Игровые данные
+        const gameData = [
+            { letter: 'A', word: 'ant', image: '🐜' },
+            { letter: 'B', word: 'bed', image: '🛏️' },
+            { letter: 'C', word: 'cat', image: '🐱' },
+            { letter: 'D', word: 'dog', image: '🐶' },
+            { letter: 'E', word: 'egg', image: '🥚' },
+            { letter: 'F', word: 'flag', image: '🚩' },
+            { letter: 'G', word: 'glass', image: '🥛' },
+            { letter: 'H', word: 'horse', image: '🐴' }
+        ];
+
+        // Состояние игры
+        let score = 0;
+        let activeBubble = null;
+        let bubbles = [];
+        let speechSynthesis;
+        
+        // Элементы DOM
+        const ocean = document.querySelector('.ocean');
+        const scoreEl = document.getElementById('score');
+        const restartBtn = document.getElementById('restart-btn');
+        const starsContainer = document.querySelector('.stars');
+        const fish = document.querySelector('.fish');
+        
+        // Инициализация игры
+        function initGame() {
+            // Очищаем предыдущие пузыри
+            document.querySelectorAll('.bubble').forEach(bubble => bubble.remove());
+            bubbles = [];
+            score = 0;
+            scoreEl.textContent = score;
+            
+            // Инициализируем синтез речи
+            speechSynthesis = window.speechSynthesis;
+            
+            // Создаем пузыри с буквами и картинками
+            gameData.forEach(item => {
+                createBubble(item, 'letter');
+                createBubble(item, 'image');
+            });
+            
+            // Перемешиваем пузыри
+            shuffleBubbles();
+            
+            // Позиционируем пузыри случайным образом
+            positionBubbles();
+        }
+        
+        // Создаем пузырь
+        function createBubble(item, type) {
+            const bubble = document.createElement('div');
+            bubble.className = `bubble ${type}-bubble`;
+            bubble.dataset.type = type;
+            bubble.dataset.letter = item.letter;
+            
+            const content = document.createElement('div');
+            content.className = 'bubble-content';
+            
+            if (type === 'letter') {
+                content.textContent = `${item.letter}${item.letter.toLowerCase()}`;
+                bubble.style.width = '90px';
+                bubble.style.height = '90px';
+            } else {
+                content.innerHTML = `<div class="bubble-image">${item.image}</div><div>${item.word}</div>`;
+                bubble.style.width = '110px';
+                bubble.style.height = '110px';
+            }
+            
+            bubble.appendChild(content);
+            ocean.appendChild(bubble);
+            
+            // Назначаем обработчики событий для перетаскивания
+            bubble.setAttribute('draggable', 'true');
+            bubble.addEventListener('dragstart', handleDragStart);
+            bubble.addEventListener('dragover', handleDragOver);
+            bubble.addEventListener('drop', handleDrop);
+            bubble.addEventListener('dragend', handleDragEnd);
+            
+            // Сохраняем в массиве
+            bubbles.push({
+                element: bubble,
+                type: type,
+                letter: item.letter,
+                word: item.word,
+                image: item.image
+            });
+            
+            // Анимация появления
+            bubble.style.opacity = '0';
+            bubble.style.transform = 'scale(0.5)';
+            setTimeout(() => {
+                bubble.style.transition = 'opacity 0.5s, transform 0.5s';
+                bubble.style.opacity = '1';
+                bubble.style.transform = 'scale(1)';
+            }, 100);
+            
+            return bubble;
+        }
+        
+        // Перемешиваем пузыри
+        function shuffleBubbles() {
+            for (let i = bubbles.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [bubbles[i], bubbles[j]] = [bubbles[j], bubbles[i]];
+            }
+        }
+        
+        // Позиционируем пузыри случайным образом
+        function positionBubbles() {
+            const oceanRect = ocean.getBoundingClientRect();
+            
+            bubbles.forEach((bubble, index) => {
+                const bubbleEl = bubble.element;
+                const maxX = oceanRect.width - bubbleEl.offsetWidth;
+                const maxY = oceanRect.height - bubbleEl.offsetHeight - 100; // Оставляем место снизу
+                
+                // Случайная позиция
+                const x = Math.random() * maxX;
+                const y = 100 + Math.random() * maxY;
+                
+                bubbleEl.style.left = `${x}px`;
+                bubbleEl.style.top = `${y}px`;
+                
+                // Разная анимация плавания
+                bubbleEl.style.animation = `float ${8 + Math.random() * 4}s infinite ease-in-out`;
+                bubbleEl.style.animationDelay = `${index * 0.5}s`;
+            });
+        }
+        
+        // Обработчики событий перетаскивания
+        function handleDragStart(e) {
+            activeBubble = this;
+            e.dataTransfer.setData('text/plain', this.dataset.letter);
+            this.style.opacity = '0.7';
+            this.style.zIndex = '10';
+        }
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+        }
+        
+        function handleDrop(e) {
+            e.preventDefault();
+            if (!activeBubble) return;
+            
+            const targetBubble = this;
+            const activeLetter = activeBubble.dataset.letter;
+            const targetLetter = targetBubble.dataset.letter;
+            const activeType = activeBubble.dataset.type;
+            const targetType = targetBubble.dataset.type;
+            
+            // Проверяем, что перетаскиваем разные типы пузырей
+            if (activeType === targetType) {
+                showFeedback(false, activeBubble);
+                return;
+            }
+            
+            // Проверяем соответствие буквы и картинки
+            if (activeLetter === targetLetter) {
+                // Правильное сопоставление
+                showFeedback(true, activeBubble, targetBubble);
+                
+                // Увеличиваем счет
+                score++;
+                scoreEl.textContent = score;
+                
+                // Озвучиваем результат
+                speak(`${activeLetter}, ${getWordForLetter(activeLetter)}`);
+                
+                // Анимация и удаление пузырей
+                animateMerge(activeBubble, targetBubble);
+                
+                // Рыбка забирает пузыри
+                animateFishTaking(activeBubble, targetBubble);
+            } else {
+                // Неправильное сопоставление
+                showFeedback(false, activeBubble);
+            }
+        }
+        
+        function handleDragEnd() {
+            this.style.opacity = '1';
+            this.style.zIndex = '5';
+            activeBubble = null;
+        }
+        
+        // Показать обратную связь
+        function showFeedback(isCorrect, bubble1, bubble2 = null) {
+            if (isCorrect) {
+                // Анимация звездочек
+                createStarBurst(bubble1);
+                if (bubble2) createStarBurst(bubble2);
+                
+                // Звук успеха
+                playSuccessSound();
+            } else {
+                // Анимация отталкивания
+                bubble1.style.animation = 'none';
+                bubble1.style.transform = 'translateX(-10px)';
+                
+                setTimeout(() => {
+                    bubble1.style.transform = 'translateX(10px)';
+                }, 100);
+                
+                setTimeout(() => {
+                    bubble1.style.transform = 'translateX(0)';
+                    bubble1.style.animation = `float ${8 + Math.random() * 4}s infinite ease-in-out`;
+                }, 200);
+                
+                // Звук ошибки
+                playErrorSound();
+            }
+        }
+        
+        // Анимация слияния пузырей
+        function animateMerge(bubble1, bubble2) {
+            bubble1.style.transition = 'all 0.8s ease';
+            bubble2.style.transition = 'all 0.8s ease';
+            
+            // Перемещаем к центру
+            const rect1 = bubble1.getBoundingClientRect();
+            const rect2 = bubble2.getBoundingClientRect();
+            const centerX = (rect1.left + rect2.left) / 2;
+            const centerY = (rect1.top + rect2.top) / 2;
+            
+            bubble1.style.left = `${centerX - rect1.width/2}px`;
+            bubble1.style.top = `${centerY - rect1.height/2}px`;
+            bubble2.style.left = `${centerX - rect2.width/2}px`;
+            bubble2.style.top = `${centerY - rect2.height/2}px`;
+            
+            // Уменьшаем и делаем прозрачными
+            setTimeout(() => {
+                bubble1.style.transform = 'scale(0)';
+                bubble1.style.opacity = '0';
+                bubble2.style.transform = 'scale(0)';
+                bubble2.style.opacity = '0';
+            }, 500);
+        }
+        
+        // Анимация рыбки, забирающей пузыри
+        function animateFishTaking(bubble1, bubble2) {
+            // Показываем рыбку в начальной позиции
+            fish.style.display = 'block';
+            fish.style.bottom = '20px';
+            fish.style.left = '-100px';
+            
+            // Анимация движения рыбки к пузырям
+            setTimeout(() => {
+                const rect = bubble1.getBoundingClientRect();
+                const oceanRect = ocean.getBoundingClientRect();
+                
+                fish.style.left = `${rect.left - oceanRect.left - 50}px`;
+                fish.style.bottom = `${rect.top - oceanRect.top + 30}px`;
+                fish.style.transition = 'left 1s ease, bottom 1s ease';
+                
+                // Анимация "поедания" пузырей
+                setTimeout(() => {
+                    fish.style.animation = 'fish-swim 3s forwards';
+                    
+                    // Удаляем пузыри после анимации
+                    setTimeout(() => {
+                        bubble1.remove();
+                        bubble2.remove();
+                        
+                        // Убираем рыбку
+                        setTimeout(() => {
+                            fish.style.display = 'none';
+                        }, 500);
+                    }, 1000);
+                }, 1000);
+            }, 800);
+        }
+        
+        // Создать анимацию звездочек
+        function createStarBurst(bubble) {
+            const rect = bubble.getBoundingClientRect();
+            const starsContainer = document.querySelector('.stars');
+            
+            for (let i = 0; i < 8; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = `${rect.left + rect.width/2}px`;
+                star.style.top = `${rect.top + rect.height/2}px`;
+                
+                // Направление звездочек
+                const angle = (i / 8) * 2 * Math.PI;
+                const distance = 50 + Math.random() * 50;
+                const targetX = Math.cos(angle) * distance;
+                const targetY = Math.sin(angle) * distance;
+                
+                starsContainer.appendChild(star);
+                
+                // Анимация звездочки
+                star.style.animation = `star-burst 0.8s forwards`;
+                star.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                
+                // Удаляем звездочку после анимации
+                setTimeout(() => {
+                    star.remove();
+                }, 800);
+            }
+        }
+        
+        // Озвучить текст
+        function speak(text, rate = 0.9) {
+            if (speechSynthesis.speaking) {
+                speechSynthesis.cancel();
+            }
+            
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = rate;
+            utterance.pitch = 1.2;
+            speechSynthesis.speak(utterance);
+        }
+        
+        // Получить слово по букве
+        function getWordForLetter(letter) {
+            const item = gameData.find(item => item.letter === letter);
+            return item ? item.word : '';
+        }
+        
+        // Воспроизвести звук успеха
+        function playSuccessSound() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(523.25, context.currentTime); // До
+            oscillator.frequency.setValueAtTime(659.25, context.currentTime + 0.1); // Ми
+            oscillator.frequency.setValueAtTime(783.99, context.currentTime + 0.2); // Соль
+            
+            gainNode.gain.setValueAtTime(0.3, context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+            
+            oscillator.start();
+            oscillator.stop(context.currentTime + 0.5);
+        }
+        
+        // Воспроизвести звук ошибки
+        function playErrorSound() {
+            const context = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = context.createOscillator();
+            const gainNode = context.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(context.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.setValueAtTime(349.23, context.currentTime); // Фа
+            oscillator.frequency.setValueAtTime(293.66, context.currentTime + 0.1); // Ре
+            
+            gainNode.gain.setValueAtTime(0.3, context.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.3);
+            
+            oscillator.start();
+            oscillator.stop(context.currentTime + 0.3);
+        }
+        
+        // Инициализация игры при загрузке
+        window.addEventListener('load', () => {
+            initGame();
+            
+            // Обработчик кнопки перезапуска
+            restartBtn.addEventListener('click', initGame);
+        });
+    </script>
+</body>
+</html>
