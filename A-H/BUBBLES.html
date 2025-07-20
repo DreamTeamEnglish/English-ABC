@@ -135,7 +135,7 @@
         
         .instructions {
             position: absolute;
-            bottom: 20px;
+            bottom: 30px;
             left: 0;
             width: 100%;
             text-align: center;
@@ -278,7 +278,31 @@
                 top: 70px;
             }
         }
-        
+footer {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 1rem;
+            z-index: 50;
+            font-family: 'Comic Sans MS', cursive;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        footer a {
+            color: #fffacd;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+{
+            /* Добавим padding-bottom для футера */
+            padding-bottom: 40px;
+        }
     </style>
 </head>
 <body>
@@ -296,7 +320,11 @@
                     <path d="M0,25 Q5,30 0,35 Z" fill="#FF8E53" />
                 </svg>
             </div>
+<footer>
+        All rights reserved · <a href="https://vk.com/dreamteamenglish" target="_blank">https://vk.com/dreamteamenglish</a> 👩‍🏫
+    </footer>
             <div class="stars"></div>
+        </div>
         
         <h1 class="game-title">🐠 Буквенные Пузыри 🐚</h1>
         
@@ -306,14 +334,11 @@
         
         <button class="restart-btn" id="restart-btn">Новая игра</button>
         
-
-     <div class="instructions">
+        <div class="instructions">
             Перетащи пузырь с буквой на пузырь с картинкой, которая начинается на эту букву!
         </div>
-        </div>      
     </div>
-      
-  
+
     <script>
         // Игровые данные
         const gameData = [
@@ -688,5 +713,4 @@
         });
     </script>
 </body>
-
 </html>
