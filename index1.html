@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>English ABC</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('background.jpg') no-repeat center center fixed;
+      background-size: cover;
+    }
+
+    .content-wrapper {
+      background-color: rgba(255, 255, 255, 0.8);
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 40px 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    img.logo {
+      width: 120px;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      color: #2c3e50;
+      font-size: 2.8em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    .button-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+
+    .branch-button {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      padding: 18px 36px;
+      font-size: 1.2em;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .branch-button:hover {
+      background-color: #2980b9;
+      transform: scale(1.05);
+    }
+
+    .icon {
+      font-size: 1.5em;
+      margin-right: 8px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 700px;
+      border-radius: 14px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+      margin-top: 20px;
+    }
+
+    footer {
+      margin-top: 50px;
+      font-size: 1em;
+      color: #555;
+    }
+
+    footer a {
+      color: #2c3e50;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="content-wrapper">
+    <img src="logo.jpg" alt="English ABC Logo" class="logo">
+
+    <h1>Добро пожаловать в English ABC!</h1>
+    <p>Выберите диапазон букв, чтобы перейти в нужную ветку:</p>
+
+    <div class="button-container">
+      <button class="branch-button" onclick="window.location.href='https://github.com/baksmil/English-ABC/tree/A-H'">
+        <span class="icon">🔡</span>A – H
+      </button>
+      <button class="branch-button" onclick="window.location.href='https://github.com/baksmil/English-ABC/tree/I-Q'">
+        <span class="icon">🔡</span>I – Q
+      </button>
+      <button class="branch-button" onclick="window.location.href='https://github.com/baksmil/English-ABC/tree/R-Z'">
+        <span class="icon">🔠</span>R – Z
+      </button>
+    </div>
+
+    <video controls>
+      <source src="ABC-song.mp4" type="video/mp4">
+      Ваш браузер не поддерживает воспроизведение видео.
+    </video>
+
+    <footer>
+      © 2025 — <a href="https://vk.com/dreamteamenglish" target="_blank">Dream Team English</a>
+    </footer>
+  </div>
+
+</body>
+</html>
