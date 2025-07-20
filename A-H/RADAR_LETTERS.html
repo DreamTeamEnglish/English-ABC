@@ -20,6 +20,8 @@
             flex-direction: column;
             align-items: center;
             overflow-y: auto;
+            position: relative;
+            padding-bottom: 60px;
         }
         
         .container {
@@ -192,6 +194,28 @@
             100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 235, 59, 0); }
         }
         
+        footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1rem;
+            color: white;
+            z-index: 1;
+        }
+        
+        footer a {
+            color: #ff9d00;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 600px) {
             h1 {
                 font-size: 1.8rem;
@@ -215,6 +239,11 @@
             .side-controls {
                 min-width: 100%;
                 order: 1;
+            }
+            
+            footer {
+                font-size: 0.9rem;
+                bottom: 10px;
             }
         }
     </style>
@@ -245,15 +274,19 @@
         </div>
     </div>
 
+    <footer>
+        All rights reserved 👩‍🏫 <a href="https://vk.com/dreamteamenglish" target="_blank">Dream Team English</a>
+    </footer>
+
     <script>
         // Game configuration
         const config = {
             letters: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-            radarSpeed: 0.007, // Замедленная скорость луча
+            radarSpeed: 0.007,
             detectionRadius: 20,
             scanRadius: 200,
             letterSize: 30,
-            gameDuration: 180000 // 3 minutes
+            gameDuration: 180000
         };
 
         // Game state
@@ -293,7 +326,6 @@
 
         // Initialize game
         function initGame() {
-            // Reset game state
             gameState = {
                 radarAngle: 0,
                 isScanning: false,
@@ -307,23 +339,19 @@
                 paused: false
             };
             
-            // Initialize letter positions
             generateLetterPositions();
             
-            // Update UI
             foundLettersEl.textContent = '';
             countEl.textContent = '0';
             totalEl.textContent = config.letters.length;
             statusEl.textContent = 'Ready to start!';
             nextBtn.style.display = 'none';
             
-            // Enable/disable buttons
             startBtn.disabled = false;
             stopBtn.disabled = true;
             playAgainBtn.disabled = false;
             nextBtn.disabled = false;
             
-            // Draw initial state
             draw();
         }
 
@@ -339,14 +367,12 @@
                 let x, y;
                 
                 while (!validPosition) {
-                    // Generate position in circular area
                     const angle = Math.random() * Math.PI * 2;
                     const distance = minDistance + Math.random() * (maxDistance - minDistance);
                     
                     x = centerX + Math.cos(angle) * distance;
                     y = centerY + Math.sin(angle) * distance;
                     
-                    // Check if position is not overlapping with existing letters
                     validPosition = !gameState.letterPositions.some(pos => {
                         const dx = pos.x - x;
                         const dy = pos.y - y;
@@ -364,21 +390,17 @@
             const centerY = gameState.canvasSize / 2;
             const scanRadius = (gameState.canvasSize / 2) - 10;
             
-            // Clear canvas
             ctx.clearRect(0, 0, gameState.canvasSize, gameState.canvasSize);
             
-            // Draw radar circles
             ctx.strokeStyle = 'rgba(0, 195, 255, 0.3)';
             ctx.lineWidth = 2;
             
-            // Draw concentric circles
             for (let r = 50; r <= scanRadius; r += 50) {
                 ctx.beginPath();
                 ctx.arc(centerX, centerY, r, 0, Math.PI * 2);
                 ctx.stroke();
             }
             
-            // Draw radar lines
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.lineTo(
@@ -387,7 +409,6 @@
             );
             ctx.stroke();
             
-            // Draw detection arc
             if (gameState.isScanning && !gameState.paused) {
                 const gradient = ctx.createRadialGradient(
                     centerX, centerY, 0,
@@ -409,14 +430,12 @@
                 ctx.fill();
             }
             
-            // Draw letters
             const letterFontSize = Math.max(20, config.letterSize * (gameState.canvasSize / 500));
             ctx.font = `bold ${letterFontSize}px Arial`;
             ctx.textAlign = 'center';
             ctx.textBaseline = 'middle';
             
             gameState.letterPositions.forEach(pos => {
-                // Highlight if letter is found or is current letter
                 if (pos.found) {
                     ctx.fillStyle = '#00ff9d';
                     ctx.shadowBlur = 15;
@@ -433,16 +452,13 @@
                 ctx.fillText(pos.letter, pos.x, pos.y);
             });
             
-            // Reset shadow
             ctx.shadowBlur = 0;
             
-            // Draw center point
             ctx.fillStyle = '#00c3ff';
             ctx.beginPath();
             ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
             ctx.fill();
             
-            // Draw pause indicator if game is paused
             if (gameState.paused) {
                 ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
                 ctx.fillRect(0, 0, gameState.canvasSize, gameState.canvasSize);
@@ -451,7 +467,7 @@
                 ctx.font = 'bold 30px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText('SAY THE LETTER!', centerX, centerY - 20);
-                ctx.font = 'bold 24px Arial';
+                ctx.font = 'bold 45px Arial'; // Увеличенный шрифт для буквы
                 ctx.fillText(gameState.currentLetter.letter, centerX, centerY + 30);
             }
         }
@@ -460,13 +476,11 @@
         function update() {
             if (!gameState.isScanning || gameState.paused) return;
             
-            // Update radar angle
             gameState.radarAngle += config.radarSpeed;
             if (gameState.radarAngle > Math.PI * 2) {
                 gameState.radarAngle = 0;
             }
             
-            // Detect letters
             const centerX = gameState.canvasSize / 2;
             const centerY = gameState.canvasSize / 2;
             const scanRadius = (gameState.canvasSize / 2) - 10;
@@ -474,38 +488,27 @@
             gameState.letterPositions.forEach(pos => {
                 if (pos.found || gameState.paused) return;
                 
-                // Calculate angle to letter
                 const dx = pos.x - centerX;
                 const dy = pos.y - centerY;
                 const distance = Math.sqrt(dx * dx + dy * dy);
                 const letterAngle = Math.atan2(dy, dx);
                 
-                // Normalize angles
                 const radarAngle = gameState.radarAngle % (Math.PI * 2);
                 let angleDiff = Math.abs(radarAngle - letterAngle);
                 
-                // Handle angle wrap-around
                 if (angleDiff > Math.PI) {
                     angleDiff = Math.PI * 2 - angleDiff;
                 }
                 
-                // Check if letter is in radar beam
                 if (distance <= scanRadius && angleDiff < 0.15) {
                     gameState.currentLetter = pos;
                     pauseGame();
-                    
-                    // Play sound
                     playBeepSound(660, 0.3);
-                    
-                    // Show NEXT button
                     nextBtn.style.display = 'block';
                 }
             });
             
-            // Redraw scene
             draw();
-            
-            // Continue animation
             gameState.animationId = requestAnimationFrame(update);
         }
 
@@ -520,13 +523,11 @@
         function resumeGame() {
             if (!gameState.currentLetter) return;
             
-            // Mark letter as found if not already
             if (!gameState.currentLetter.found) {
                 gameState.currentLetter.found = true;
                 gameState.foundLetters.push(gameState.currentLetter.letter);
                 updateFoundLettersDisplay();
                 
-                // Visual feedback
                 foundLettersEl.classList.add('highlight');
                 setTimeout(() => foundLettersEl.classList.remove('highlight'), 500);
             }
@@ -535,14 +536,11 @@
             gameState.currentLetter = null;
             nextBtn.style.display = 'none';
             
-            // Запускаем радар сразу после нажатия NEXT
             statusEl.textContent = 'Scanning for letters...';
             draw();
             
-            // Продолжаем обновление игры
             gameState.animationId = requestAnimationFrame(update);
             
-            // Check if all letters found
             if (gameState.foundLetters.length === config.letters.length) {
                 endGame(true);
             }
@@ -580,17 +578,14 @@
             gameState.paused = false;
             statusEl.textContent = 'Scanning for letters...';
             
-            // Enable/disable buttons
             startBtn.disabled = true;
             stopBtn.disabled = false;
             playAgainBtn.disabled = true;
             nextBtn.style.display = 'none';
             
-            // Set game timer
             gameState.startTime = Date.now();
             gameState.timer = setTimeout(() => endGame(false), config.gameDuration);
             
-            // Start animation loop
             gameState.animationId = requestAnimationFrame(update);
         }
 
@@ -606,7 +601,6 @@
             statusEl.textContent = 'Scanning stopped. Press START to continue.';
             nextBtn.style.display = 'none';
             
-            // Enable/disable buttons
             startBtn.disabled = false;
             stopBtn.disabled = true;
             playAgainBtn.disabled = false;
@@ -620,7 +614,6 @@
             clearTimeout(gameState.timer);
             nextBtn.style.display = 'none';
             
-            // Enable/disable buttons
             startBtn.disabled = true;
             stopBtn.disabled = true;
             playAgainBtn.disabled = false;
@@ -630,13 +623,14 @@
                 setTimeout(() => playBeepSound(1046, 0.5), 500);
                 statusEl.textContent = 'Congratulations! All letters found!';
                 foundLettersEl.innerHTML = '🏆 KINGDOM BUILT! ALL LETTERS FOUND! 🏆';
+                foundLettersEl.style.fontSize = '2.25rem'; // Увеличенный шрифт
             } else {
                 playBeepSound(220, 0.5);
                 setTimeout(() => playBeepSound(165, 0.5), 500);
                 const foundCount = gameState.foundLetters.length;
-                const totalCount = config.letters.length;
-                statusEl.textContent = `Time's up! Found ${foundCount} of ${totalCount} letters.`;
-                foundLettersEl.innerHTML = `⏰ TIME'S UP! FOUND ${foundCount}/${totalCount} LETTERS!`;
+                const foundLettersText = gameState.foundLetters.join(' ');
+                statusEl.textContent = `Time's up! Found ${foundCount} of ${config.letters.length} letters.`;
+                foundLettersEl.innerHTML = `⏰ LETTERS FOUND: <span style="font-size: 2.25rem">${foundLettersText}</span>`;
             }
         }
 
