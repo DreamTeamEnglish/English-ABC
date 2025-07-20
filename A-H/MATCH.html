@@ -19,6 +19,8 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            position: relative;
+            padding-bottom: 60px;
         }
         
         .container {
@@ -211,6 +213,15 @@
             font-weight: bold;
         }
         
+        .timer-box {
+            background-color: #a29bfe;
+            padding: 10px 25px;
+            border-radius: 15px;
+            font-weight: bold;
+            color: white;
+            display: none; /* Скрыт по умолчанию */
+        }
+        
         .restart-btn {
             margin-top: 30px;
             padding: 15px 40px;
@@ -256,6 +267,28 @@
             animation: shake 0.3s;
         }
         
+        /* Стили для футера */
+        footer {
+            position: absolute;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1rem;
+            color: #2d3436;
+        }
+        
+        footer a {
+            color: #ff6b6b;
+            text-decoration: none;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
         @media (max-width: 768px) {
             .items-container {
                 grid-template-columns: repeat(2, 1fr);
@@ -267,6 +300,11 @@
             
             .prompt {
                 font-size: 1.6rem;
+            }
+            
+            footer {
+                font-size: 0.9rem;
+                bottom: 10px;
             }
         }
         
@@ -301,6 +339,12 @@
             .item-name {
                 font-size: 1.2rem;
             }
+            
+            footer {
+                font-size: 0.8rem;
+                padding: 0 10px;
+                bottom: 5px;
+            }
         }
     </style>
 </head>
@@ -312,13 +356,13 @@
         
         <div class="game-screen">
             <div class="level-selector">
-                <button class="level-btn active" id="level1">Уровень 1: Слова</button>
-                <button class="level-btn" id="level2">Уровень 2: Звуки букв</button>
+                <button class="level-btn active" id="level1">Уровень 1: Найди слова!</button>
+                <button class="level-btn" id="level2">Уровень 2: Ускоряемся!</button>
             </div>
             
             <div class="game-info">
                 <div class="prompt">
-                    <span id="prompt-text">Найди слово: </span>
+                    <span id="prompt-text">Найди слова: </span>
                     <span class="prompt-letter" id="target-letter">?</span>
                 </div>
             </div>
@@ -333,10 +377,13 @@
             
             <div class="score-container">
                 <div class="score-box">
-                    Правильно: <span id="correct-count">0</span>
+                    Правильно: <span id="correct-count">0</span>/8
                 </div>
                 <div class="score-box">
                     Ошибки: <span id="wrong-count">0</span>
+                </div>
+                <div class="timer-box" id="timer-box">
+                    Время: <span id="timer">1:00</span>
                 </div>
             </div>
             
@@ -344,17 +391,21 @@
         </div>
     </div>
 
+    <footer>
+        All rights reserved 👩‍🏫 <a href="https://vk.com/dreamteamenglish" target="_blank">Dream Team English</a>
+    </footer>
+
     <script>
         // Game data for letters A-H
         const gameData = [
-            { letter: 'A', sound: 'æ', word: 'ant', image: 'images/ant.jpg' },
-            { letter: 'B', sound: 'b', word: 'bed', image: 'images/bed.jpg' },
-            { letter: 'C', sound: 'k', word: 'cat', image: 'images/cat.jpg' },
-            { letter: 'D', sound: 'd', word: 'dog', image: 'images/dog.jpg' },
-            { letter: 'E', sound: 'e', word: 'egg', image: 'images/egg.jpg' },
-            { letter: 'F', sound: 'f', word: 'flag', image: 'images/flag.jpg' },
-            { letter: 'G', sound: 'g', word: 'glass', image: 'images/glass.jpg' },
-            { letter: 'H', sound: 'h', word: 'horse', image: 'images/horse.jpg' }
+            { letter: 'A', word: 'ant', image: 'images/ant.jpg' },
+            { letter: 'B', word: 'bed', image: 'images/bed.jpg' },
+            { letter: 'C', word: 'cat', image: 'images/cat.jpg' },
+            { letter: 'D', word: 'dog', image: 'images/dog.jpg' },
+            { letter: 'E', word: 'egg', image: 'images/egg.jpg' },
+            { letter: 'F', word: 'flag', image: 'images/flag.jpg' },
+            { letter: 'G', word: 'glass', image: 'images/glass.jpg' },
+            { letter: 'H', word: 'horse', image: 'images/horse.jpg' }
         ];
 
         // Game state
@@ -363,6 +414,10 @@
         let correctCount = 0;
         let wrongCount = 0;
         let speechSynthesis;
+        let timer;
+        let timeLeft = 60; // 1 минута в секундах
+        let usedWords = []; // Для отслеживания использованных слов
+        let timerInterval;
         
         // DOM elements
         const level1Btn = document.getElementById('level1');
@@ -374,18 +429,67 @@
         const correctCountEl = document.getElementById('correct-count');
         const wrongCountEl = document.getElementById('wrong-count');
         const restartBtn = document.getElementById('restart-btn');
+        const timerBox = document.getElementById('timer-box');
+        const timerDisplay = document.getElementById('timer');
         
         // Initialize game
         function initGame() {
             // Initialize speech synthesis
             speechSynthesis = window.speechSynthesis;
             
+            // Reset game state
             correctCount = 0;
             wrongCount = 0;
+            usedWords = [];
+            clearInterval(timerInterval);
+            
+            // Hide timer for level 1
+            if (currentLevel === 1) {
+                timerBox.style.display = 'none';
+            } else {
+                // Reset timer for level 2
+                timeLeft = 60;
+                updateTimerDisplay();
+                timerBox.style.display = 'block';
+                startTimer();
+            }
+            
             updateScore();
             feedback.textContent = "Выбери правильную картинку!";
             feedback.classList.remove('correct');
             startRound();
+        }
+        
+        // Start timer for level 2
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    feedback.textContent = "Время вышло! Игра окончена.";
+                    feedback.style.color = "#ff6b6b";
+                    disableItems();
+                }
+            }, 1000);
+        }
+        
+        // Update timer display
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        // Disable all items when game ends
+        function disableItems() {
+            const items = document.querySelectorAll('.item');
+            items.forEach(item => {
+                item.style.pointerEvents = 'none';
+                item.style.opacity = '0.7';
+            });
         }
         
         // Speak text
@@ -406,8 +510,15 @@
             // Clear items container
             itemsContainer.innerHTML = '';
             
-            // Select random target item
-            targetItem = gameData[Math.floor(Math.random() * gameData.length)];
+            // If all words have been used, reset the list
+            if (usedWords.length === gameData.length) {
+                usedWords = [];
+            }
+            
+            // Select random target item from unused words
+            const availableWords = gameData.filter(item => !usedWords.includes(item.word));
+            targetItem = availableWords[Math.floor(Math.random() * availableWords.length)];
+            usedWords.push(targetItem.word);
             
             // Update prompt based on level
             if (currentLevel === 1) {
@@ -419,12 +530,12 @@
                     speak(targetItem.letter);
                 }, 500);
             } else {
-                promptText.textContent = "Найди предмет на звук:";
-                targetLetter.textContent = targetItem.sound;
+                promptText.textContent = "Найди слово:";
+                targetLetter.textContent = targetItem.letter;
                 
-                // Speak the sound after delay
+                // Speak the letter name after delay
                 setTimeout(() => {
-                    speak(targetItem.sound);
+                    speak(targetItem.letter);
                 }, 500);
             }
             
@@ -447,7 +558,6 @@
                 itemEl.innerHTML = `
                     <img class="item-image" src="${item.image}" alt="${item.word}">
                     <div class="item-name">${item.word}</div>
-                    <div class="item-letter">${item.letter}</div>
                 `;
                 
                 itemEl.addEventListener('click', () => {
@@ -473,7 +583,17 @@
                 
                 setTimeout(() => {
                     itemEl.classList.remove('bounce');
-                    startRound();
+                    
+                    if (correctCount === 8) {
+                        // All words found
+                        if (currentLevel === 2) {
+                            clearInterval(timerInterval);
+                        }
+                        feedback.textContent = "Поздравляем! Вы нашли все слова!";
+                        disableItems();
+                    } else {
+                        startRound();
+                    }
                 }, 1500);
             } else {
                 // Wrong answer
